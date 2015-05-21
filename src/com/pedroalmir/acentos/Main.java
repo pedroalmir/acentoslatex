@@ -14,6 +14,8 @@ public class Main {
 	
 	private static ArrayList<File> files;
 	private static Map<String, String> replaceMap;
+	private static boolean revert = true;
+	
 	static{
 		replaceMap = new HashMap<String, String>();
 		replaceMap.put("á", "\\'a");
@@ -40,13 +42,17 @@ public class Main {
 	 */
 	public static void main(String[] args) throws IOException {
 		files = new ArrayList<File>();
-		final File folder = new File("C:\\Users\\Pedro Almir\\Dropbox\\Proj. IA e Eng. Soft. (2)\\Artigos\\Athena\\7_SBAI_2015_emDesenvolvimento\\parts");
+		final File folder = new File("LOCATION");
 		listFilesForFolder(folder);
 		
 		for (File file : files) {
 			String content = getContent(file);
 			for(String key : replaceMap.keySet()){
-				content = content.replace(key, replaceMap.get(key));
+				if(revert){
+					content = content.replace(replaceMap.get(key), key);
+				}else{
+					content = content.replace(key, replaceMap.get(key));
+				}
 			}
 			saveContent(file, content);
 		}

@@ -11,20 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-	
+
 	private static ArrayList<File> files;
 	private static Map<String, String> replaceMap;
-	private static boolean revert = true;
-	
-	static{
+	private static boolean revert = false;
+
+	static {
 		replaceMap = new HashMap<String, String>();
 		replaceMap.put("á", "\\'a");
-		replaceMap.put("à", "\\'a");  
-		replaceMap.put("ã", "\\~a");  
-		replaceMap.put("â", "\\^a");  
-		replaceMap.put("é", "\\'e"); 
-		replaceMap.put("ê", "\\^e"); 
-		replaceMap.put("í", "\\'{\\i}"); 
+		replaceMap.put("à", "\\'a");
+		replaceMap.put("ã", "\\~a");
+		replaceMap.put("â", "\\^a");
+		replaceMap.put("é", "\\'e");
+		replaceMap.put("ê", "\\^e");
+		replaceMap.put("í", "\\'{\\i}");
 		replaceMap.put("Í", "\\'I");
 		replaceMap.put("ó", "\\'o");
 		replaceMap.put("õ", "\\~o");
@@ -34,72 +34,76 @@ public class Main {
 		replaceMap.put("ç", "\\c{c}");
 		replaceMap.put("Ç", "\\c{C}");
 	}
-	
-	
+
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
 		files = new ArrayList<File>();
-		final File folder = new File("LOCATION");
+		final File folder = new File(
+				"C:\\Users\\Ronyerison\\Dropbox\\Proj. IA e Eng. Soft. (1)\\Artigos\\Athena\\7_SBAI_2015_emDesenvolvimento\\parts");
 		listFilesForFolder(folder);
-		
+		String nameFile = "metodo";
+
 		for (File file : files) {
-			String content = getContent(file);
-			for(String key : replaceMap.keySet()){
-				if(revert){
-					content = content.replace(replaceMap.get(key), key);
-				}else{
-					content = content.replace(key, replaceMap.get(key));
+			if (file.getName().contains(nameFile)) {
+				String content = getContent(file);
+				for (String key : replaceMap.keySet()) {
+					if (revert) {
+						content = content.replace(replaceMap.get(key), key);
+					} else {
+						content = content.replace(key, replaceMap.get(key));
+					}
 				}
+				saveContent(file, content);
+				System.out.println(file.getName());
 			}
-			saveContent(file, content);
 		}
 	}
-	
+
 	/**
 	 * @param folder
 	 */
 	public static void listFilesForFolder(final File folder) {
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	            listFilesForFolder(fileEntry);
-	        } else {
-	            System.out.println(fileEntry.getName());
-	            files.add(fileEntry);
-	        }
-	    }
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry);
+			} else {
+				files.add(fileEntry);
+			}
+		}
 	}
-	
+
 	/**
 	 * @param file
 	 * @return
 	 * @throws IOException
 	 */
-	private static String getContent(File file) throws IOException{
+	private static String getContent(File file) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(file));
-	    try {
-	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
+		try {
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
 
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append(System.lineSeparator());
-	            line = br.readLine();
-	        }
-	        return sb.toString();
-	    } finally {
-	        br.close();
-	    }
+			while (line != null) {
+				sb.append(line);
+				sb.append(System.lineSeparator());
+				line = br.readLine();
+			}
+			return sb.toString();
+		} finally {
+			br.close();
+		}
 	}
-	
+
 	/**
 	 * @param file
 	 * @param content
 	 * @throws IOException
 	 */
-	private static void saveContent(File file, String content) throws IOException{
+	private static void saveContent(File file, String content)
+			throws IOException {
 		FileWriter fw = new FileWriter(file);
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(content);
